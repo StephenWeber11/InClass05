@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">InClass05</string>
+    <string name="search_string">search</string>
+    <string name="go_string">go</string>
+    <string name="photo" />
+    <string name="photo_content_desc">Photo retrieved from API</string>
+    <string name="photo_left_arrow">Previous Arrow</string>
+    <string name="photo_right_arrow">Next Arrow</string>
 </resources>

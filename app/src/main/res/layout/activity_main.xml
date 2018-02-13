@@ -13,10 +13,11 @@
 
         <EditText
             android:id="@+id/editText_search"
-            android:layout_width="match_parent"
+            android:layout_width="397dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.8"
-            android:hint="search" />
+            android:layout_marginLeft="20dp"
+            android:hint="@string/search_string" />
 
         <Button
             android:id="@+id/button_go"
@@ -26,7 +27,7 @@
             android:layout_marginRight="19dp"
             android:layout_weight="0.2"
             android:longClickable="true"
-            android:text="go" />
+            android:text="@string/go_string" />
     </LinearLayout>
 
     <LinearLayout
@@ -40,7 +41,8 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginTop="10dp"
-            android:layout_weight="0.8" />
+            android:layout_weight="0.8"
+            android:contentDescription="@string/photo_content_desc" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -52,6 +54,7 @@
                 android:id="@+id/prev"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:contentDescription="@string/photo_left_arrow"
                 android:src="@mipmap/ic_launcher_prev" />
 
             <ImageButton
@@ -59,6 +62,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="200dp"
+                android:contentDescription="@string/photo_right_arrow"
                 android:src="@mipmap/ic_launcher_next" />
 
         </LinearLayout>
