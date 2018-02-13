@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -62,8 +63,11 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.next).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (imageIndex != imageLinks.size()){
+                if (imageIndex != imageLinks.size()-1){
                     imageIndex++;
+                    new GetImageAsync(imageView).execute();
+                }else {
+                    imageIndex = 0;
                     new GetImageAsync(imageView).execute();
                 }
             }
@@ -74,6 +78,9 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if(imageIndex != 0) {
                     imageIndex--;
+                    new GetImageAsync(imageView).execute();
+                } else {
+                   imageIndex = imageLinks.size()-1;
                     new GetImageAsync(imageView).execute();
                 }
             }
@@ -201,11 +208,20 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private class GetImageLinksAsync extends AsyncTask<String, Void, String> {
-
+        ProgressDialog progressDialog;
         RequestParams mParams;
 
         public GetImageLinksAsync(RequestParams params){
             mParams = params;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            progressDialog = new ProgressDialog(MainActivity.this);
+            progressDialog.setMessage("Loading Dictionary...");
+            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            progressDialog.setCancelable(false);
+            progressDialog.show();
         }
 
         @Override
@@ -260,14 +276,26 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 Log.d("Demo", "NO RESULT!");
             }
+            progressDialog.dismiss();
         }
     }
 
     private class GetImageAsync extends AsyncTask<String, Void, Bitmap>{
+
+        ProgressDialog progressDialog;
         ImageView imageView;
 
         public GetImageAsync(ImageView imageView){
             this.imageView = imageView;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            progressDialog = new ProgressDialog(MainActivity.this);
+            progressDialog.setMessage("Loading Photo...");
+            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            progressDialog.setCancelable(false);
+            progressDialog.show();
         }
 
         @Override
@@ -304,6 +332,7 @@ public class MainActivity extends AppCompatActivity {
             if(bitmap != null && imageView != null){
                 imageView.setImageBitmap(bitmap);
             }
+            progressDialog.dismiss();
         }
     }
 
