@@ -56,17 +56,19 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.button_go).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showPopup(keywords);
+                if(!keywords.isEmpty()) {
+                    showPopup(keywords);
+                } else {
+                    Toast toast = Toast.makeText(MainActivity.this,"No data returned!", Toast.LENGTH_SHORT);
+                    toast.show();
+                }
             }
         });
 
         findViewById(R.id.next).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(imageLinks.isEmpty()){
-                    Toast toast = Toast.makeText(MainActivity.this,"No images returned!", Toast.LENGTH_SHORT);
-                    toast.show();
-                } else {
+                if(!imageLinks.isEmpty()){
                     if (imageIndex != imageLinks.size() - 1) {
                         imageIndex++;
                         new GetImageAsync(imageView).execute();
@@ -74,6 +76,8 @@ public class MainActivity extends AppCompatActivity {
                         imageIndex = 0;
                         new GetImageAsync(imageView).execute();
                     }
+                } else {
+                    letsMakeToast();
                 }
             }
         });
@@ -81,10 +85,7 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.prev).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(imageLinks.isEmpty()){
-                    Toast toast = Toast.makeText(MainActivity.this,"No images returned!", Toast.LENGTH_SHORT);
-                    toast.show();
-                } else {
+                if(!imageLinks.isEmpty()){
                     if (imageIndex != 0) {
                         imageIndex--;
                         new GetImageAsync(imageView).execute();
@@ -92,6 +93,8 @@ public class MainActivity extends AppCompatActivity {
                         imageIndex = imageLinks.size() - 1;
                         new GetImageAsync(imageView).execute();
                     }
+                } else {
+                    letsMakeToast();
                 }
             }
         });
@@ -113,22 +116,31 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void formatKeywords(String result){
-        String[] keywordsArray = result.split(";");
-        for(String str : keywordsArray){
-            str.substring(0, str.length()-1);
-            keywords.add(str);
-            Log.d("Demo", str);
+        if(result != null && result != "") {
+            String[] keywordsArray = result.split(";");
+            for (String str : keywordsArray) {
+                str.substring(0, str.length() - 1);
+                keywords.add(str);
+                Log.d("Demo", str);
+            }
         }
     }
 
     private void formatImages(String result){
-        String[] images = result.split("\n");
-        if(imageLinks != null && imageLinks.isEmpty()) {
-            for (String str : images) {
-                imageLinks.add(str);
+        if(result != null && result != "") {
+            String[] images = result.split("\n");
+            if (imageLinks != null && imageLinks.isEmpty()) {
+                for (String str : images) {
+                    imageLinks.add(str);
+                }
             }
         }
 
+    }
+
+    private void letsMakeToast(){
+        Toast toast = Toast.makeText(MainActivity.this,"No images returned!", Toast.LENGTH_SHORT);
+        toast.show();
     }
 
     private void showPopup(ArrayList<String> keywords) {
@@ -151,12 +163,7 @@ public class MainActivity extends AppCompatActivity {
                 requestParams.addParameter("keyword", selectedKeyword);
                 imageLinks = new ArrayList<>();
                 new GetImageLinksAsync(requestParams).execute("http://dev.theappsdr.com/apis/photos/index.php");
-                if(!imageLinks.isEmpty()) {
-                    new GetImageAsync(imageView).execute();
-                } else {
-                    Toast toast = Toast.makeText(MainActivity.this,"No images returned!", Toast.LENGTH_SHORT);
-                    toast.show();
-                }
+                new GetImageAsync(imageView).execute();
                 dialog.dismiss();
             }
         });
@@ -174,7 +181,7 @@ public class MainActivity extends AppCompatActivity {
             String result = null;
             try {
 
-                URL url = new URL("http://dev.theappsdr.com/apis/photos/keywords.php");
+                URL url = new URL(params[0]);
                 connection = (HttpURLConnection) url.openConnection();
                 bufferedReader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
                 String line = "";
@@ -217,7 +224,7 @@ public class MainActivity extends AppCompatActivity {
             if(result != null){
                 Log.d("Demo", result);
             } else {
-                Log.d("Demo", "NO RESULT!");
+                Log.d("Demo", "NO DATA!");
             }
         }
     }
@@ -289,7 +296,7 @@ public class MainActivity extends AppCompatActivity {
             if(result != null){
                 Log.d("Demo", result);
             } else {
-                Log.d("Demo", "NO RESULT!");
+                Log.d("Demo", "NO IMAGE LINKS!");
             }
             progressDialog.dismiss();
         }
@@ -319,23 +326,25 @@ public class MainActivity extends AppCompatActivity {
             HttpURLConnection connection = null;
             Bitmap image = null;
 
-            try {
-                URL url = new URL(imageLinks.get(imageIndex));
-                connection = (HttpURLConnection) url.openConnection();
-                connection.connect();
+            if(!imageLinks.isEmpty()) {
+                try {
+                    URL url = new URL(imageLinks.get(imageIndex));
+                    connection = (HttpURLConnection) url.openConnection();
+                    connection.connect();
 
-                if(connection.getResponseCode() == HttpURLConnection.HTTP_OK){
-                    image = BitmapFactory.decodeStream(connection.getInputStream());
-                    return image;
-                }
+                    if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                        image = BitmapFactory.decodeStream(connection.getInputStream());
+                        return image;
+                    }
 
-            } catch(MalformedURLException e){
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                if(connection != null){
-                    connection.disconnect();
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                    if (connection != null) {
+                        connection.disconnect();
+                    }
                 }
             }
 
@@ -346,8 +355,11 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(Bitmap bitmap) {
             if(bitmap != null && imageView != null){
                 imageView.setImageBitmap(bitmap);
+                progressDialog.dismiss();
+            } else {
+                progressDialog.dismiss();
+                letsMakeToast();
             }
-            progressDialog.dismiss();
         }
     }
 
