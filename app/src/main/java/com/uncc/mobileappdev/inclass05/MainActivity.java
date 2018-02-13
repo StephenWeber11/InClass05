@@ -31,8 +31,9 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     private ArrayList<String> keywords = new ArrayList<>();
-    private ArrayList<String> imageLinks = new ArrayList<>();
+    private ArrayList<String> imageLinks;
     private String selectedKeyword;
+    private int imageIndex = 0;
     EditText search;
     ImageView imageView;
 
@@ -58,7 +59,29 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        findViewById(R.id.next).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (imageIndex != imageLinks.size()){
+                    imageIndex++;
+                    new GetImageAsync(imageView).execute();
+                }
+            }
+        });
+
+        findViewById(R.id.prev).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(imageIndex != 0) {
+                    imageIndex--;
+                    new GetImageAsync(imageView).execute();
+                }
+            }
+        });
+
     }
+
+
 
     private boolean isConnected() {
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -70,6 +93,53 @@ public class MainActivity extends AppCompatActivity {
             return false;
         }
         return true;
+    }
+
+    private void formatKeywords(String result){
+        String[] keywordsArray = result.split(";");
+        for(String str : keywordsArray){
+            str.substring(0, str.length()-1);
+            keywords.add(str);
+            Log.d("Demo", str);
+        }
+    }
+
+    private void formatImages(String result){
+        String[] images = result.split("\n");
+        if(imageLinks != null && imageLinks.isEmpty()) {
+            for (String str : images) {
+                imageLinks.add(str);
+            }
+        }
+
+    }
+
+    private void showPopup(ArrayList<String> keywords) {
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        alert.setTitle("Choose Keyword");
+
+        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.select_dialog_singlechoice);
+        for(String str : keywords){
+            arrayAdapter.add(str);
+            Log.d("Keyword", str);
+        }
+
+        alert.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                selectedKeyword = arrayAdapter.getItem(which);
+                search.setText(selectedKeyword);
+
+                RequestParams requestParams = new RequestParams();
+                requestParams.addParameter("keyword", selectedKeyword);
+                imageLinks = new ArrayList<>();
+                new GetImageLinksAsync(requestParams).execute("http://dev.theappsdr.com/apis/photos/index.php");
+                new GetImageAsync(imageView).execute();
+                dialog.dismiss();
+            }
+        });
+
+        alert.show();
     }
 
     private class GetDataUsingGetAsync extends AsyncTask<String, Void, String>{
@@ -195,6 +265,7 @@ public class MainActivity extends AppCompatActivity {
 
     private class GetImageAsync extends AsyncTask<String, Void, Bitmap>{
         ImageView imageView;
+
         public GetImageAsync(ImageView imageView){
             this.imageView = imageView;
         }
@@ -206,7 +277,7 @@ public class MainActivity extends AppCompatActivity {
             Bitmap image = null;
 
             try {
-                URL url = new URL(params[0]);
+                URL url = new URL(imageLinks.get(imageIndex));
                 connection = (HttpURLConnection) url.openConnection();
                 connection.connect();
 
@@ -225,7 +296,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
 
-            return null;
+            return image;
         }
 
         @Override
@@ -236,50 +307,4 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void formatKeywords(String result){
-        String[] keywordsArray = result.split(";");
-        for(String str : keywordsArray){
-            str.substring(0, str.length()-1);
-            keywords.add(str);
-            Log.d("Demo", str);
-        }
-    }
-
-    private void formatImages(String result){
-        String[] images = result.split("\n");
-        if(imageLinks != null && imageLinks.isEmpty()) {
-            for (String str : images) {
-                imageLinks.add(str);
-            }
-        }
-
-    }
-
-    private void showPopup(ArrayList<String> keywords) {
-        AlertDialog.Builder alert = new AlertDialog.Builder(this);
-        alert.setTitle("Choose Keyword");
-
-        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.select_dialog_singlechoice);
-        for(String str : keywords){
-            arrayAdapter.add(str);
-            Log.d("Keyword", str);
-        }
-
-        alert.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                selectedKeyword = arrayAdapter.getItem(which);
-                search.setText(selectedKeyword);
-
-                RequestParams requestParams = new RequestParams();
-                requestParams.addParameter("keyword", selectedKeyword);
-                new GetImageLinksAsync(requestParams).execute("http://dev.theappsdr.com/apis/photos/index.php");
-                String imageURL = imageLinks.get(0);
-                new GetImageAsync(imageView).execute(imageURL);
-                dialog.dismiss();
-            }
-        });
-
-        alert.show();
-    }
 }
