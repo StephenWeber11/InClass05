@@ -63,12 +63,17 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.next).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (imageIndex != imageLinks.size()-1){
-                    imageIndex++;
-                    new GetImageAsync(imageView).execute();
-                }else {
-                    imageIndex = 0;
-                    new GetImageAsync(imageView).execute();
+                if(imageLinks.isEmpty()){
+                    Toast toast = Toast.makeText(MainActivity.this,"No images returned!", Toast.LENGTH_SHORT);
+                    toast.show();
+                } else {
+                    if (imageIndex != imageLinks.size() - 1) {
+                        imageIndex++;
+                        new GetImageAsync(imageView).execute();
+                    } else {
+                        imageIndex = 0;
+                        new GetImageAsync(imageView).execute();
+                    }
                 }
             }
         });
@@ -76,12 +81,17 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.prev).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(imageIndex != 0) {
-                    imageIndex--;
-                    new GetImageAsync(imageView).execute();
+                if(imageLinks.isEmpty()){
+                    Toast toast = Toast.makeText(MainActivity.this,"No images returned!", Toast.LENGTH_SHORT);
+                    toast.show();
                 } else {
-                   imageIndex = imageLinks.size()-1;
-                    new GetImageAsync(imageView).execute();
+                    if (imageIndex != 0) {
+                        imageIndex--;
+                        new GetImageAsync(imageView).execute();
+                    } else {
+                        imageIndex = imageLinks.size() - 1;
+                        new GetImageAsync(imageView).execute();
+                    }
                 }
             }
         });
@@ -141,7 +151,12 @@ public class MainActivity extends AppCompatActivity {
                 requestParams.addParameter("keyword", selectedKeyword);
                 imageLinks = new ArrayList<>();
                 new GetImageLinksAsync(requestParams).execute("http://dev.theappsdr.com/apis/photos/index.php");
-                new GetImageAsync(imageView).execute();
+                if(!imageLinks.isEmpty()) {
+                    new GetImageAsync(imageView).execute();
+                } else {
+                    Toast toast = Toast.makeText(MainActivity.this,"No images returned!", Toast.LENGTH_SHORT);
+                    toast.show();
+                }
                 dialog.dismiss();
             }
         });
