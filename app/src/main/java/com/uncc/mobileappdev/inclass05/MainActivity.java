@@ -366,6 +366,8 @@ public class MainActivity extends AppCompatActivity {
 
                 progressDialog.dismiss();
             } else {
+                findViewById(R.id.prev).setVisibility(View.INVISIBLE);
+                findViewById(R.id.next).setVisibility(View.INVISIBLE);
                 imageView.setImageBitmap(null);
                 progressDialog.dismiss();
                 letsMakeToast();

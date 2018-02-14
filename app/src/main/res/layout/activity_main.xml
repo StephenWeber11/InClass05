@@ -1,76 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.uncc.mobileappdev.inclass05.MainActivity">
-    <LinearLayout
-        android:id="@+id/linear"
-        android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <Button
+        android:id="@+id/button_go"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginEnd="22dp"
+        android:layout_marginTop="18dp"
+        android:text="@string/go_string" />
 
-        <EditText
-            android:id="@+id/editText_search"
-            android:layout_width="397dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.8"
-            android:layout_marginLeft="20dp"
-            android:hint="@string/search_string" />
+    <EditText
+        android:id="@+id/editText_search"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/button_go"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="54dp"
+        android:ems="10"
+        android:hint="@string/search_string" />
 
-        <Button
-            android:id="@+id/button_go"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="19dp"
-            android:layout_marginRight="19dp"
-            android:layout_weight="0.2"
-            android:longClickable="true"
-            android:text="@string/go_string" />
-    </LinearLayout>
+    <ImageView
+        android:id="@+id/photoDisplay"
+        android:layout_width="400dp"
+        android:layout_height="400dp"
+        android:layout_below="@+id/button_go"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="26dp"
+        android:contentDescription="@string/photo_content_desc" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/linear"
-        android:orientation="vertical">
+    <ImageButton
+        android:id="@+id/prev"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:layout_alignEnd="@+id/editText_search"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="15dp"
+        android:layout_marginEnd="174dp"
+        android:background="?android:attr/colorBackground"
+        android:contentDescription="@string/photo_left_arrow"
+        android:visibility="invisible"
+        app:srcCompat="@mipmap/prev" />
 
-        <ImageView
-            android:id="@+id/photoDisplay"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginTop="10dp"
-            android:layout_weight="0.8"
-            android:contentDescription="@string/photo_content_desc" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="0.2"
-            android:orientation="horizontal">
-
-            <ImageButton
-                android:id="@+id/prev"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="#0000"
-                android:contentDescription="@string/photo_left_arrow"
-                android:src="@mipmap/ic_launcher_prev"
-                android:visibility="invisible" />
-
-            <ImageButton
-                android:id="@+id/next"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="220dp"
-                android:background="#0000"
-                android:contentDescription="@string/photo_right_arrow"
-                android:src="@mipmap/ic_launcher_next"
-                android:visibility="invisible" />
-
-        </LinearLayout>
-
-    </LinearLayout>
+    <ImageButton
+        android:id="@+id/next"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignTop="@+id/prev"
+        android:background="?android:attr/colorBackground"
+        android:contentDescription="@string/photo_right_arrow"
+        android:visibility="invisible"
+        app:srcCompat="@mipmap/next" />
 
 </RelativeLayout>
