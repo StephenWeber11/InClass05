@@ -54,20 +54,20 @@
                 android:id="@+id/prev"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:background="#0000"
                 android:contentDescription="@string/photo_left_arrow"
                 android:src="@mipmap/ic_launcher_prev"
-                android:background="#0000"
-                android:visibility="invisible"/>
+                android:visibility="invisible" />
 
             <ImageButton
                 android:id="@+id/next"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="220dp"
+                android:background="#0000"
                 android:contentDescription="@string/photo_right_arrow"
                 android:src="@mipmap/ic_launcher_next"
-                android:background="#0000"
-                android:visibility="invisible"/>
+                android:visibility="invisible" />
 
         </LinearLayout>
 
