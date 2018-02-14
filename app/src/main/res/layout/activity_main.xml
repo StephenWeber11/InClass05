@@ -18,7 +18,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="0.8"
             android:layout_marginLeft="20dp"
-            android:hint="@string/search_string" />
+            android:hint="@string/search_string"
+            android:cursorVisible="false"/>
 
         <Button
             android:id="@+id/button_go"
