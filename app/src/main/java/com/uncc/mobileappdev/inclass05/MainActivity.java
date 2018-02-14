@@ -355,8 +355,18 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(Bitmap bitmap) {
             if(bitmap != null && imageView != null){
                 imageView.setImageBitmap(bitmap);
+
+                if(imageLinks.size() > 1){
+                    findViewById(R.id.prev).setVisibility(View.VISIBLE);
+                    findViewById(R.id.next).setVisibility(View.VISIBLE);
+                } else {
+                    findViewById(R.id.prev).setVisibility(View.INVISIBLE);
+                    findViewById(R.id.next).setVisibility(View.INVISIBLE);
+                }
+
                 progressDialog.dismiss();
             } else {
+                imageView.setImageBitmap(null);
                 progressDialog.dismiss();
                 letsMakeToast();
             }
